@@ -62,3 +62,24 @@ def fetch_medal_tally(df,year,country):
     medal_final_df.index += 1
     return (medal_final_df)
 
+def data_over_time(df,col):
+    data_over = df.drop_duplicates(['Year',col])['Year'].value_counts().reset_index().sort_values('index')
+    data_over.rename(columns={'index':'Year','Year':col},inplace=True)
+    return data_over
+
+def sport_list(df):
+    sportlist = df['Sport'].unique().tolist()
+    sportlist.insert(0,'Overall')
+
+    return sportlist
+
+def most_succssful(df,sport):
+    #removing rows with nan in medal
+    temp_df = df.dropna(subset=["Medal"])
+    if(sport!='Overall'):
+        temp_df = temp_df[temp_df['Sport'] == sport]
+    
+    x = temp_df['Name'].value_counts().reset_index().head(10).merge(df,left_on = "index", right_on = "Name",how = "left")[['index','Name_x','Sport','region','Year']].drop_duplicates("index")  
+    x.rename(columns = {'index':'Name','Name_x':'Medals','region':'Country'},inplace = True)
+    x.index += 1 
+    return x
