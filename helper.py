@@ -83,3 +83,12 @@ def most_succssful(df,sport):
     x.rename(columns = {'index':'Name','Name_x':'Medals','region':'Country'},inplace = True)
     x.index += 1 
     return x
+
+def countryMedalTally(df,country):
+    temp_df = df.dropna(subset=["Medal"])
+    temp_df.drop_duplicates(subset=['Team','NOC','Games','Year','Season','City','Sport','Event','Medal'],inplace = True)
+    new_df = temp_df[temp_df['region']==country]
+    x = new_df.groupby('Year').count()['Medal'].reset_index()
+    return x
+
+    

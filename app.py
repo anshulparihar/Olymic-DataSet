@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 st.sidebar.header("Olympic Analysis")
 user_menu = st.sidebar.radio(
      "Select Analysis Preferences",
-     ('Medal Tally','Overall Analysis', 'Country-Wise Analysis', 'Athlete Analysis'))
+     ('Medal Tally','Overall Analysis', 'Country-Wise Analysis'))
 
 
 df = pd.read_csv('athlete_events.csv')
@@ -36,7 +36,7 @@ if(user_menu == 'Medal Tally'):
     if(selected_year != "Overall" and selected_country != "Overall"):
         st.title(selected_country +" Medal Tally in year " +str(selected_year))
     medal_tally = helper.fetch_medal_tally(df,selected_year,selected_country)
-    st.table(medal_tally)
+    st.table(medal_tally.head(10))
     #st.write(medal_tally)
 
 if(user_menu == "Overall Analysis"):
@@ -97,7 +97,7 @@ if(user_menu == "Overall Analysis"):
 
     st.title("Most Successful Athlete")
     allsport = helper.sport_list(df)
-    selected_sport = st.sidebar.selectbox("Select Sport",allsport)
+    selected_sport = st.selectbox("Select Sport",allsport)
     x = helper.most_succssful(df,selected_sport)
     hide_table_row_index = """
             <style>
@@ -109,3 +109,13 @@ if(user_menu == "Overall Analysis"):
     # Inject CSS with Markdown
     st.markdown(hide_table_row_index, unsafe_allow_html=True)
     st.table(x)
+
+if(user_menu == "Country-Wise Analysis"):
+    year,country = helper.country_year_list(df)
+    st.sidebar.title('Country-wise Analysis')
+    selected_country = st.sidebar.selectbox("Select Country",country)
+    countryMedal = helper.countryMedalTally(df,selected_country)
+    st.title(f"{selected_country} Medal Tally each year")
+    fig = px.line(countryMedal, x="Year", y="Medal")
+    st.plotly_chart(fig,use_container_width=True)
+
