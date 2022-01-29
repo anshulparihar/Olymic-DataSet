@@ -1,4 +1,4 @@
 streamlit
-plotlly
+plotly
 seaborn
 matplotlib
